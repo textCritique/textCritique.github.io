@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sierpinski Gasket</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #62c759;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        pre {
+            background: #eee;
+            padding: 10px;
+            border-left: 5px solid #ccc;
+            overflow-x: auto;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: rgb(136, 189, 105);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(99, 168, 142, 0.1);
+        }
+        /* Neon Navbar Styles */
+        .navbar {
+            background-color: #222; /* Dark background for navbar */
+            box-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc; /* Neon glow effect */
+        }
+
+        .navbar-brand, .nav-link {
+            color: #00ffcc; /* Neon color for text */
+            text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc; /* Neon glow for text */
+        }
+
+        .nav-link:hover, .navbar-brand:hover {
+            color: #ff00ff; /* Change color on hover */
+            text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff; /* Neon glow on hover */
+        }
+
+        .dropdown-menu {
+            background-color: #333; /* Dark background for dropdown */
+            border: none; /* Remove border */
+            box-shadow: 0 0 10px #00ffcc; /* Neon glow for dropdown */
+        }
+
+        .dropdown-item {
+            color: #ffffff; /* White text for dropdown items */
+            text-shadow: 0 0 5px #00ffcc; /* Neon glow for dropdown items */
+        }
+
+        .dropdown-item:hover {
+            background-color: #444; /* Slightly lighter background on hover */
+            color: #ff00ff; /* Change text color on hover */
+            text-shadow: 0 0 5px #ff00ff; /* Neon glow on hover */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">My CG Blog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Blog Posts
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="koch.html">Koch Snowflake</a>
+                        <a class="dropdown-item" href="sierpinski.html">Sierpinski Curve</a>
+                        <a class="dropdown-item" href="scan.html">Scan-line Algorithm</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <h1>Sierpinski Gasket</h1>
+        <p>The Sierpinski gasket is a recursively defined region. To draw it, we need to know the coordinates of the initial triangle and the order of the gasket.</p>
+        <img src="/figures/merged-gasket.png" alt="Gasket of Various Order">
+
+        <h2>Midpoint Calculation</h2>
+        <p>The only prerequisite is to know that the coordinate of the midpoint of a line segment (in our case, the sides of the triangle) is the average of the coordinates of the endpoints defining the line segment.</p>
+        <p>For example, if <strong>AB</strong> is a line segment and <strong>M</strong> is its midpoint, where <strong>A ≡ (x<sub>1</sub>, y<sub>1</sub>)</strong> and <strong>B ≡ (x<sub>2</sub>, y<sub>2</sub>)</strong>, then:</p>
+        <pre><code>M ≡ ( (x<sub>1</sub> + x<sub>2</sub>) / 2, (y<sub>1</sub> + y<sub>2</sub>) / 2 )</code></pre>
+
+        <h2>Algorithm</h2>
+        <img src="/figures/gasket.png" alt="Sierpinski Gasket Construction">
+        <h3>Sierpinski-gasket (x<sub>1</sub>, y<sub>1</sub>, x<sub>2</sub>, y<sub>2</sub>, x<sub>3</sub>, y<sub>3</sub>, n)</h3>
+        <ol>
+            <li>If <strong>n = 0</strong>, then:
+                <ul>
+                    <li>Draw a filled triangle defined by points A, B, and C.</li>
+                </ul>
+            </li>
+            <li>If <strong>n > 0</strong>, then:
+                <ul>
+                    <li>Draw Sierpinski gasket defined by A, D, and F, reducing order by 1.</li>
+                    <li>Draw Sierpinski gasket defined by D, B, and E, reducing order by 1.</li>
+                    <li>Draw Sierpinski gasket defined by F, E, and C, reducing order by 1.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <p>See the implementation <a href="https://github.com/Induaditya3/scan-conversion_ocaml/blob/main/sierpinski_gasket.ml">here</a>.</p>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
