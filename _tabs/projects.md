@@ -3,8 +3,6 @@
 icon: fas fa-lightbulb
 order: 4
 author: textCritique
-categories: [Animal, Insect]
-tags: [bee]
 description: Short summary of the project
 ---
 
