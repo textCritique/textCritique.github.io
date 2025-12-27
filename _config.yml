@@ -158,19 +158,19 @@ jekyll_compose:
     drafts:
       description:
       image:
-      category:
-      tags:
-      author:
+      category: [blog]
+      tags: [blog]
+      author: textCritique
     posts:
       description:
       image:
-      category:
-      tags:
-      author:
+      category: [blog]
+      tags: [blog]
+      author: textCritique
       published: false
       sitemap: false
     pages:
-      author: 
+      author: textCritique
 # ------------ The following options are not recommended to be modified ------------------
 
 kramdown:
