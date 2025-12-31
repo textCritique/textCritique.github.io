@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "Make bootable usb stick normal again"
+title: "Make Bootable USB Stick Normal Again"
 date: 2025-12-27 12:39 +0530
-description: How to guide for how make bootable usb drive into normal storage device again on linux
+description: How-to guide for making a bootable USB drive a normal storage device on Linux
 image:
 category: [blog, how-to]
 tags: [usb drive, bootable pen drive]
@@ -13,7 +13,7 @@ sitemap: true
 
 ## Prerequisites
 
-Assuming you are on arch linux, here are some prerequisite packages that needs to be to installed.
+Assuming you're on Arch Linux, here are the packages you need to install (adjust for your distro: e.g., `sudo apt install dosfstools` or `sudo dnf install dosfstools`).
 
 ```bash
 # for using mkfs.vfat command
@@ -21,7 +21,7 @@ sudo pacman -S dosfstools
 ```
 ## Find the device name
 
-First find out device name. It is usually sdb but can be different. Pay close attention to total storage. It will give you a hint.
+First find the device name. It is often `/dev/sdb` but can be different—pay close attention to the total size and the model to avoid wiping the wrong disk. Replace `/dev/sdb` below with your actual device.
 
 For example
 ```bash
@@ -41,7 +41,7 @@ Device     Boot   Start     End Sectors  Size Id Type
 /dev/sdb1  *         64 2491103 2491040  1.2G  0 Empty
 /dev/sdb2       2491104 3005151  514048  251M ef EFI (FAT-12/16/32)
 ```
-Or
+Or, for a quick overview:
 
 ```bash
 lsblk
@@ -57,6 +57,9 @@ First one is more clear because device model is given. In my case it is **SanDis
 
 ## Wipe everything out including partition table
 
+
+> This is destructive. Double-check the device (`/dev/sdX`) before running.
+{: .prompt-danger }
 ```bash
 sudo wipefs --all /dev/sdb
 ```
@@ -68,15 +71,26 @@ sudo wipefs --all /dev/sdb
 sudo cfdisk /dev/sdb
 ```
 
-It will open up tui interface.
-- Select dos partition table format as it is widely supported and will work on all systems.
-- Next select new partition and keep default partition size that is maximum available. And set it as primary.
-- Finally quit the interface.
+It opens a TUI interface:
+- Select the DOS partition table format (widely supported and works on most systems).
+- Create a new primary partition using the default (maximum) size.
+- Write the changes and quit.
 
 ## Format the partition as a FAT32
 
-Following will format the partition as FAT32 and name the partition 1 ( *the only partition* ) as **A** 
+This formats the new partition as FAT32 and labels partition 1 (the only partition) as **A** (feel free to pick another label).
 ```bash
 sudo mkfs.vfat -n "A" /dev/sdb
 ```
+
+## Verify
+
+Check that the partition is present and formatted:
+
+```bash
+lsblk --output NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS /dev/sdb
+# or
+file -s /dev/sdb1
+```
+
 Done!
