@@ -158,17 +158,17 @@ jekyll_compose:
     drafts:
       description:
       image:
-      category: [blog]
-      tags: [blog]
+      category: 
+      tags: 
       author: textCritique
     posts:
       description:
       image:
-      category: [blog]
-      tags: [blog]
+      category: 
+      tags: 
       author: textCritique
       published: false
-      sitemap: false
+      sitemap: true
     pages:
       author: textCritique
 # ------------ The following options are not recommended to be modified ------------------
