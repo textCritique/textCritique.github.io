@@ -4,7 +4,7 @@ title: Haskell Way
 date: 2026-01-01 16:27 +0530
 description:
 image:
-category: [blog, learning]
+category: [notes, languages, haskell]
 tags: [haskell, functional programming]
 author: textCritique
 published: true
