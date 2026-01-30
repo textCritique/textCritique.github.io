@@ -4,8 +4,8 @@ title: My First Post
 date: 2025-12-04 20:48 +0530
 description: My experience hosting static site generator on github pages for the first time 
 image:
-category: [meta, blog]
-tags: [meta, blog, first, jekyll-chirpy]
+category: [blog, meta]
+tags: [first, jekyll-chirpy]
 author: textCritique
 published: true
 sitemap: true
