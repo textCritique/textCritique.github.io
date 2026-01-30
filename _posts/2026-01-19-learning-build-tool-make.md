@@ -4,8 +4,8 @@ title: 'Learning Build Tool: make'
 date: 2026-01-19 17:47 +0530
 description: some notes based on software carpentry's lesson
 image:
-category:
-tags:
+category: [notes, tools, make]
+tags: [make, build-tools]
 author: textCritique
 published: true
 sitemap: true
