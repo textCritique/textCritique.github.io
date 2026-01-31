@@ -1,8 +1,12 @@
 \documentclass{article}
+
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{booktabs}
+
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
 \usepackage{graphicx}
-\usepackage{color}
 \usepackage[scaled=0.95]{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage[colorlinks=true, linkcolor=black]{hyperref}
@@ -17,10 +21,7 @@
 
 \tableofcontents
 
-\newpage
-\thispagestyle{empty}
-\mbox{}
-\newpage
+\clearpage
 
 \section{Background of Computer Graphics}
 
@@ -84,14 +85,14 @@ The \textbf{graphics pipeline} is a sequence of stages that transforms \textbf{3
 \begin{enumerate}
     \item \textbf{Vertex Processing}
     \begin{itemize}
-        \item \textbf{Computations:} Transform vertices from local object space to screen space using 4\,$\times$\,4 transformation matrices (modeling, viewing, projection).
+        \item \textbf{Computations:} Transform vertices from local object space to screen space using $4\times 4$ transformation matrices (modeling, viewing, projection).
         \item \textbf{Key operations:} Per-vertex calculations such as position, normal, and color transformations.
         \item \textbf{Programmable:} Vertex shaders allow custom logic (e.g., procedural deformation, animation).
     \end{itemize}
 
     \item \textbf{Tessellation} \emph{(optional)}
     \begin{itemize}
-        \item \textbf{Computations:} Subdivide coarse geometry into finer meshes using Tessellation Control Shaders (TCS) and Tessellation\\Evaluation Shaders (TES).
+        \item \textbf{Computations:} Subdivide coarse geometry into finer meshes using Tessellation Control Shaders (TCS) and Tessellation Evaluation Shaders (TES).
         \item \textbf{Purpose:} Dynamic level-of-detail and smooth surfaces (e.g., subdivision surfaces).
     \end{itemize}
 
@@ -183,5 +184,194 @@ Both domains rely on geometric primitives (lines, polygons, curves), transformat
     \item \textbf{Hard real-time:} Deadline misses are unacceptable (e.g., safety-critical medical/aerospace systems).
     \item \textbf{Soft real-time:} Deadline misses degrade quality but the system continues (e.g., games, video playback).
 \end{itemize}
+
+
+\section{General Information about OpenGL}
+
+\subsection{What is the difference between the OpenGL programming interface specification
+and an OpenGL implementation?}
+
+The \textbf{OpenGL specification} is a technical document developed and maintained by the Khronos Group that defines the exact behavior, functions, and expected outputs of the OpenGL API. It is not a software product but a standard that outlines what OpenGL should do, without specifying how it should be implemented. The specification describes the API's functions, constants (like \texttt{GL\_TEXTURE\_2D}), and the state-machine model, focusing on results rather than implementation details.
+
+An \textbf{OpenGL implementation} is the actual software that brings the specification to life. It is developed by hardware vendors (NVIDIA, AMD, Intel) and/or operating-system vendors, and it translates OpenGL API calls into GPU/driver-specific commands.
+
+Implementations vary by platform:
+\begin{itemize}
+    \item \textbf{Windows:} Usually provided by graphics card vendors (IHVs) via the driver.
+    \item \textbf{macOS:} Controlled by Apple.
+    \item \textbf{Linux:} Provided by vendor drivers and open-source stacks such as Mesa.
+\end{itemize}
+
+The key difference is that the specification is the \emph{rulebook}, while the implementation is the \emph{software} that follows those rules. As long as an implementation adheres to the specification, OpenGL programs behave consistently across diverse hardware and operating systems.
+
+\subsection{What are the benefits of an open and standardised interface specification?}
+
+\begin{itemize}
+    \item \textbf{Interoperability:} Different systems and vendors can work together using the same contract.
+    \item \textbf{Lower cost and faster integration:} Standard interfaces reduce custom glue code, testing effort, and maintenance.
+    \item \textbf{Competition and choice:} Open standards lower entry barriers and prevent lock-in to a single vendor.
+    \item \textbf{Longevity and sustainability:} Standard ports and formats make products easier to repair, reuse, and upgrade.
+    \item \textbf{Quality and security:} Clear, stable specifications reduce ambiguity and integration errors and make auditing/testing easier.
+\end{itemize}
+
+
+\subsection{What makes an OpenGL implementation work on a computer?}
+
+An OpenGL implementation works on a computer through a combination of drivers, GPU acceleration, and an OS graphics stack.
+
+\begin{itemize}
+    \item \textbf{Graphics drivers:} Hardware vendors provide drivers that implement the OpenGL specification and translate API calls into GPU commands.
+    \item \textbf{Hardware acceleration:} Most rendering work runs on the GPU (highly parallel), which enables real-time performance.
+    \item \textbf{OS integration:} The window system and OS graphics stack provide context creation and presentation (showing the framebuffer on screen).
+    \item \textbf{Software fallback (rare):} If no suitable GPU/driver is available, a software renderer may run on the CPU, but performance is typically poor.
+\end{itemize}
+
+\subsection{In which programming language is OpenGL specified?}
+
+OpenGL is not a programming language; it is a cross-language, cross-platform graphics API. The specification is written in technical prose and defines a C-based API surface.
+
+In practice:
+\begin{itemize}
+    \item \textbf{API:} Defined as a C API and commonly used from C/C++.
+    \item \textbf{Bindings:} Available for many languages (Java, Python, JavaScript, etc.).
+    \item \textbf{Shaders:} Written in GLSL (OpenGL Shading Language), which has a C-like syntax.
+\end{itemize}
+
+\subsection{Please explain what is JOGL and what is LWJGL.}
+
+JOGL (Java Binding for OpenGL) is an open-source library that provides Java bindings for the OpenGL graphics API. It allows Java applications to access OpenGL's full range of 2D and 3D rendering capabilities, including support for OpenGL versions 1.0 through 4.3, as well as OpenGL ES 1, 2, and 3.  JOGL is maintained by JOGAMP and integrates well with Java's AWT and Swing GUI frameworks, enabling OpenGL rendering within standard Java components like JFrame or GLCanvas. It also includes a Native Windowing Toolkit (NEWT) and supports features like Java2D/OpenGL interoperability and debugging tools such as DebugGL, which throws exceptions at the point of OpenGL error. 
+
+LWJGL (Lightweight Java Game Library) is a Java library that provides low-level access to native APIs such as OpenGL, OpenAL, and OpenCL, along with input and windowing support via GLFW. Designed primarily for game development, LWJGL offers a thin, efficient wrapper around native code, making it ideal for performance-critical applications.  It supports full-screen mode natively, offers better cross-platform reliability, and includes built-in support for game controllers (via JInput), audio (OpenAL), and modern OpenGL features. Unlike JOGL, LWJGL does not integrate with AWT/Swing and uses a callback-based event model, which gives developers more control but requires more manual setup. 
+
+In summary:
+\begin{itemize}
+    \item \textbf{JOGL:} Best when you want OpenGL integrated into AWT/Swing style GUIs.
+    \item \textbf{LWJGL:} Best when you want a thin, game-focused wrapper (often paired with GLFW) and broader native API access.
+\end{itemize}
+
+\subsection{Compatibility profile vs. core profile}
+\label{sec:core-vs-compat}
+
+Explain the difference between the compatibility profile and the core profile of the
+OpenGL. How are the fixed-function pipeline and the programmable pipeline related
+to these profiles?
+
+The \textbf{core profile} and \textbf{compatibility profile} are two modes of modern OpenGL, introduced to manage the transition from legacy features to a cleaner, shader-based API.
+
+\begin{itemize}
+    \item \textbf{Core profile:} Removes deprecated legacy functionality (including the fixed-function pipeline). Rendering is shader-based, so you typically use at least a vertex shader and a fragment shader.
+    \item \textbf{Compatibility profile:} Retains legacy APIs (e.g., immediate mode and fixed-function lighting/texturing) so older code can still run.
+\end{itemize}
+
+	extbf{Relationship to pipelines:}
+\begin{itemize}
+    \item The \textbf{fixed-function pipeline} exists only in the compatibility profile.
+    \item The \textbf{programmable pipeline} (GLSL shaders) is required in the core profile and is also available in the compatibility profile.
+\end{itemize}
+
+\section{OpenGL Pipeline}
+
+\subsection{What is the purpose of vertex processing?}
+Vertex processing transforms per-vertex data into a form suitable for rasterization and display.
+\begin{itemize}
+    \item \textbf{Transforms:} Applies model, view, and projection transforms to bring positions into clip space.
+    \item \textbf{Per-vertex work:} Processes attributes (normals, colors, texture coordinates) and prepares values for interpolation.
+    \item \textbf{Programmability:} Implemented via vertex shaders (e.g., skinning, deformation, custom lighting inputs).
+    \item \textbf{Data flow:} Outputs vertices to primitive assembly and clipping.
+\end{itemize}
+
+Vertex processing operates on individual vertices (not whole primitives), so connectivity-dependent work happens later.
+
+\subsection{What is the purpose of rasterization?}
+
+Rasterization converts geometric primitives (triangles, lines, points) into \textbf{fragments} on a pixel grid.
+
+\begin{itemize}
+    \item \textbf{Pixel-grid conversion:} Determines which pixels are covered by a primitive.
+    \item \textbf{Interpolation:} Interpolates attributes (depth, color, texture coordinates) across the primitive.
+    \item \textbf{Real-time efficiency:} GPUs are heavily optimized for rasterization, making it the default approach for interactive graphics.
+\end{itemize}
+
+Rasterization is fast, but it often uses approximations for lighting; modern engines sometimes combine rasterization with ray tracing for better realism.
+
+\subsection{What is the purpose of fragment processing?}
+
+Fragment processing determines the final output for each fragment produced by rasterization (which may or may not become a visible pixel).
+
+\begin{itemize}
+    \item \textbf{Shading:} Fragment shaders compute final color using lighting and textures.
+    \item \textbf{Visibility/tests:} Depth and stencil tests decide whether a fragment is kept.
+    \item \textbf{Compositing:} Blending combines fragment output with existing framebuffer values (e.g., transparency).
+\end{itemize}
+
+Many fragments are discarded by tests, so fragment processing strongly affects both performance and visual quality.
+
+\section{Programmable OpenGL Pipeline}
+
+\subsection{Which parts of the fixed-function pipeline have become programmable in the
+programmable pipeline?}
+
+\begin{itemize}
+    \item \textbf{Vertex processing:} Vertex transforms and per-vertex lighting/attribute generation moved into \textbf{vertex shaders}.
+    \item \textbf{Fragment (pixel) processing:} Per-pixel shading moved into \textbf{fragment shaders}.
+    \item \textbf{Additional stages:} Modern pipelines can also use geometry shaders, tessellation shaders, and compute shaders for specialized workloads.
+\end{itemize}
+
+Rasterization and many per-sample output operations remain fixed-function for performance, but most of the rendering logic is now controlled by shaders.
+
+\subsection{What exactly is a shader?}
+In computer graphics, a shader is a small program that runs on the GPU (Graphics Processing Unit) to control how pixels, vertices, or geometry are rendered in a 3D scene or 2D image.  Shaders are essential for creating realistic lighting, textures, shadows, and visual effects. 
+
+	\textbf{Common shader stages include:}
+\begin{itemize}
+    \item \textbf{Vertex shaders:} Process vertices and output clip-space positions plus per-vertex attributes.
+    \item \textbf{Fragment shaders:} Compute per-fragment color (and other outputs) using lighting and textures.
+    \item \textbf{Geometry shaders:} Optionally generate/modify primitives.
+    \item \textbf{Tessellation shaders:} Optionally subdivide patches into finer geometry.
+    \item \textbf{Compute shaders:} Run general-purpose GPU computations (not necessarily tied to drawing).
+\end{itemize}
+Shaders are written in specialized languages like GLSL (OpenGL Shading Language) or HLSL (High-Level Shader Language) and are executed in parallel across thousands of GPU cores, enabling high-performance rendering for video games, movies, and real-time visualizations. 
+
+\subsection{Which shaders do you know and which functions can they perform?}
+
+\begin{itemize}
+    \item \textbf{Vertex shaders:} Transform vertices, compute per-vertex outputs for later interpolation.
+    \item \textbf{Fragment shaders:} Compute final per-fragment color and other outputs (e.g., normals for deferred rendering).
+    \item \textbf{Geometry shaders (optional):} Amplify or modify primitives.
+    \item \textbf{Tessellation shaders (optional):} Adaptive subdivision for level of detail.
+    \item \textbf{Compute shaders (optional):} General GPU compute (physics, culling, post-processing, etc.).
+\end{itemize}
+
+\subsection{Which shaders must always be present in the compatibility profile?}
+
+In the OpenGL Compatibility Profile, there are no shaders that must always be present. Unlike the Core Profile or OpenGL ES, which require a linked program with at least a vertex and fragment shader to render anything, the compatibility profile maintains the Fixed-Function Pipeline (FFP). 
+
+\subsection{Which shaders must always be present in the core profile?}
+
+In an OpenGL core profile, you generally use a shader program for drawing.
+\begin{itemize}
+    \item \textbf{Vertex shader:} Required for processing vertices.
+    \item \textbf{Fragment shader:} Required for normal color rendering to a framebuffer.
+    \item \textbf{Optional stages:} Tessellation control/evaluation, geometry, and compute shaders are used only when needed.
+\end{itemize}
+
+\section{Explain the difference between a vertex, a fragment and a pixel}
+
+
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\rowcolors{2}{gray!15}{white}
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.0cm}>{\raggedright\arraybackslash}p{4.6cm}>{\raggedright\arraybackslash}p{4.6cm}}
+\rowcolor{gray!40}
+\textbf{Term} & \textbf{Definition} & \textbf{Role in Graphics Pipeline} \\
+\midrule
+Vertex & A data structure that defines a point or corner in 3D space, characterized by attributes like position, color, and texture coordinates. & The initial input data (part of geometry processing) that forms the basic building blocks (vertices) of a 3D model. \\
+Fragment & A potential pixel, essentially a data packet generated during rasterization that is located at a specific screen coordinate, containing information such as color, depth (Z-buffer value), and other attributes interpolated from the vertices of the primitive it belongs to. & An intermediate stage after geometry is converted into screen-space data (rasterization), but before final display (fragment processing). \\
+Pixel & Short for "picture element," it is the smallest physical unit of a digital image or display device (screen). & The final, displayed element on a screen after all rendering calculations are complete. \\
+\end{tabular}
+\caption{Graphics Pipeline Terms}
+\end{table}
 
 \end{document}
