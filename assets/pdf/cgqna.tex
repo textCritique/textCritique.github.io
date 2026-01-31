@@ -1,0 +1,187 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage[scaled=0.95]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[colorlinks=true, linkcolor=black]{hyperref}
+
+\title{CG Q\&A}
+\author{Aditya Raj}
+\date{February, 2026}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+\thispagestyle{empty}
+\mbox{}
+\newpage
+
+\section{Background of Computer Graphics}
+
+\subsection{Purpose of Computer Graphics}
+
+\textbf{Computer graphics} serves several key purposes:
+\begin{itemize}
+    \item \textbf{Visualization:}\\
+    Makes complex data and concepts easier to understand (charts, diagrams, simulations, medical imaging).
+    \item \textbf{Communication:} Conveys ideas more effectively than text alone (presentations, user interfaces, instructional materials).
+    \item \textbf{Entertainment:} Produces content for movies, video games, animation, and virtual experiences.
+    \item \textbf{Design and modeling:} Supports CAD and 3D modeling to design, test, and refine products before physical production.
+    \item \textbf{Simulation and training:} Creates realistic environments for training (flight simulators, surgical practice).
+    \item \textbf{User interaction:} Enables intuitive interfaces for interacting with digital systems.
+\end{itemize}
+
+In short, it \emph{bridges digital information and human perception}, making technology more accessible, useful, and engaging.
+
+\subsection{First Computer Graphics System}
+
+The first computer graphics on a digital computer system were created on the \textbf{Whirlwind computer (MIT, 1951)}. It displayed \emph{vector graphics} and used an early input device similar to a \emph{light pen}, allowing direct interaction with the screen.
+
+Whirlwind is therefore one of the earliest examples of \textbf{interactive computer graphics} on a true digital computing system.
+
+\subsection{First Fully Computer-Animated Film}
+
+The first fully computer-animated feature film is \textbf{\emph{Toy Story} (1995)}, released by Pixar and Disney.
+While there were earlier uses of \textbf{computer-generated imagery (CGI)} in films (e.g., \emph{Tron} (1982) and \emph{Young Sherlock Holmes} (1985)), \emph{Toy Story} was the first feature-length film created \emph{entirely} using computer animation.
+It marked a major milestone in animation history and helped pave the way for modern CGI films.
+
+\subsection{Uncanny Valley}
+
+The \textbf{uncanny valley} is the unsettling feeling people experience when a character looks \emph{almost---but not quite---human}. In computer graphics, this happens when a digital character is highly realistic (face, skin, movement) but still has subtle imperfections that feel unnatural. Small discrepancies (slightly off expressions, unnatural eye motion, mismatched proportions) can trigger discomfort or unease.
+
+The term was introduced by Japanese roboticist \textbf{Masahiro Mori (1970)}. He observed that as robots or avatars become more human-like, emotional affinity increases---until a point where they look nearly human but still fall short. At that point, the observer's response drops into discomfort, forming a \emph{``valley''} in a graph of human likeness vs. emotional response.
+
+This is especially relevant in \textbf{film}, \textbf{games}, and \textbf{virtual environments}. For example, \emph{The Polar Express} (2004), \emph{Final Fantasy: The Spirits Within} (2001), and the 2019 \emph{Cats} adaptation were criticized for lifelike yet unsettling characters. Game designers often avoid hyper-realistic humans and use stylized designs to maintain immersion.
+
+To reduce the uncanny valley, designers focus on \textbf{consistency} across facial expressions, motion, voice, and proportions so that all cues align with realistic human behavior. Others deliberately choose \emph{stylization} instead of photorealism to create more relatable characters.
+
+\section{Main Steps in Computer Graphics}
+
+\subsection{Abstract Steps to Create Graphics}
+
+The main abstract steps in creating a computer graphic are:
+\begin{itemize}
+    \item \textbf{Modeling:} Defining the objects and components of a scene in terms of shape, size, color, texture, and other parameters. This involves creating a digital representation of the 3D or 2D elements using primitives or detailed geometry.
+
+    \item \textbf{Scene setup:} Arranging virtual objects, lights, cameras, and other entities in a virtual environment. This includes positioning and orienting elements to create a coherent composition (and keyframing for animation when needed).
+
+    \item \textbf{Rendering:} Generating the final 2D image (or animation) from the prepared scene by applying lighting, shading, textures, and effects using algorithms such as ray tracing or scanline rendering.
+\end{itemize}
+
+These stages form the core of the graphics pipeline, which transforms abstract scene data into a visual image displayed on a screen.
+
+\subsection{Graphics Pipeline Stages}
+
+The \textbf{graphics pipeline} is a sequence of stages that transforms \textbf{3D scene data} into a \textbf{2D image} for display. It operates on primitives (vertices, triangles) using \textbf{GPUs} and graphics APIs (e.g., \emph{OpenGL}, \emph{Vulkan}) for real-time rendering.
+
+\textbf{Main processing steps and computations:}
+\begin{enumerate}
+    \item \textbf{Vertex Processing}
+    \begin{itemize}
+        \item \textbf{Computations:} Transform vertices from local object space to screen space using 4\,$\times$\,4 transformation matrices (modeling, viewing, projection).
+        \item \textbf{Key operations:} Per-vertex calculations such as position, normal, and color transformations.
+        \item \textbf{Programmable:} Vertex shaders allow custom logic (e.g., procedural deformation, animation).
+    \end{itemize}
+
+    \item \textbf{Tessellation} \emph{(optional)}
+    \begin{itemize}
+        \item \textbf{Computations:} Subdivide coarse geometry into finer meshes using Tessellation Control Shaders (TCS) and Tessellation\\Evaluation Shaders (TES).
+        \item \textbf{Purpose:} Dynamic level-of-detail and smooth surfaces (e.g., subdivision surfaces).
+    \end{itemize}
+
+    \item \textbf{Geometry Processing} \emph{(optional)}
+    \begin{itemize}
+        \item \textbf{Computations:} Modify or generate new primitives (e.g., convert points to triangles, create particles).
+        \item \textbf{Programmable:} Geometry shaders process whole primitives and can output new ones.
+    \end{itemize}
+
+    \item \textbf{Primitive Assembly \& Clipping}
+    \begin{itemize}
+        \item \textbf{Computations:}\\
+        Group vertices into primitives (triangles, lines, points), then clip primitives outside the view frustum.
+        \item \textbf{Perspective division:} Maps coordinates to normalized device coordinates (NDC).
+    \end{itemize}
+
+    \item \textbf{Rasterization}
+    \begin{itemize}
+        \item \textbf{Computations:} Convert primitives into fragments (potential pixels).
+        \item \textbf{Key tasks:} Determine pixel coverage and interpolate vertex attributes (color, texture coordinates, depth) across the primitive.
+    \end{itemize}
+
+    \item \textbf{Fragment Processing}
+    \begin{itemize}
+        \item \textbf{Computations:} Compute final pixel color per fragment using fragment shaders.
+        \item \textbf{Operations:} Apply lighting, texturing, shadows, reflections, and material effects.
+        \item \textbf{Highly parallel:} Each fragment is processed independently.
+    \end{itemize}
+
+    \item \textbf{Per-Sample Operations}
+    \begin{itemize}
+        \item \textbf{Computations:} Final decisions before writing to the framebuffer.
+        \item \textbf{Key operations:}
+        \begin{itemize}
+            \item Depth (Z) testing (via Z-buffering) to resolve visibility.
+            \item Stencil testing for masking.
+            \item Blending for transparency.
+            \item Logical operations and write masks.
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+This pipeline evolved from \emph{fixed-function} hardware (1990s) to \emph{programmable} stages (post-2001), enabling complex visual effects. Modern GPUs extend this with \textbf{ray tracing} (e.g., NVIDIA RTX) and \textbf{AI-accelerated denoising}, blending rasterization with newer rendering paradigms.
+
+\section{Requirements in Computer Graphics}
+
+\subsection{Interactive vs. Non-Interactive}
+
+\textbf{Interactive computer graphics} involve \textbf{real-time} user engagement and manipulation of visual content. Users interact through input devices (keyboard, mouse, touchscreen, VR controllers), and the system responds dynamically. Examples include video games, VR simulations, flight simulators, CAD systems, and interactive data visualizations.
+
+\textbf{Non-interactive computer graphics} are \textbf{pre-generated} and static, with no real-time user control. The content is fixed and displayed as-is, and the user can only view the output. Examples include digital images, movies, slide shows, and static website graphics.
+
+\textbf{Key difference:} \emph{user interaction}. Interactive graphics respond immediately to user input, while non-interactive graphics are fixed once rendered.
+
+\subsection{Requirements for Realistic Rendering (Interactive vs. Offline)}
+
+\textbf{Realism in non-interactive (offline) computer graphics}
+
+For non-interactive computer graphics---such as pre-rendered movie scenes or high-quality visualizations---\textbf{image quality} is prioritized over speed. Key requirements include high computational power, advanced rendering algorithms, and accurate physical modeling. This enables techniques like \textbf{ray tracing}, \textbf{global illumination}, \textbf{physically based rendering (PBR)}, subsurface scattering, and photon mapping. The \textbf{rendering equation} (Kajiya, 1986) is foundational for modeling real-world lighting. Offline pipelines also rely on shaders (HLSL/GLSL) for effects like bump mapping, normal mapping, and reflections.
+
+\textbf{Realism in interactive (real-time) computer graphics}
+
+In interactive systems (games, simulations, VR), \textbf{real-time performance} is the priority. The main challenge is balancing realism with fast rendering and low latency. Requirements include an efficient graphics pipeline, GPU hardware acceleration, and optimized algorithms. Most real-time systems rely on \textbf{rasterization} for speed, supported by APIs such as OpenGL, DirectX, and Vulkan. Techniques like depth buffering, level-of-detail (LOD), normal mapping, and shadow mapping help maintain realism with smooth frame rates.
+
+\textbf{Shared requirements}
+
+Both domains rely on geometric primitives (lines, polygons, curves), transformations (translation, rotation, scaling), clipping, texture mapping, and correct color handling. The key difference is the trade-off: offline systems maximize realism; interactive systems maximize responsiveness.
+
+\subsection{Real-Time vs. Offline Rendering}
+
+\textbf{Real-time computer graphics} generates and displays frames fast enough to create the illusion of motion and support immediate interaction. Typical targets are 30--60 FPS (or higher). Real-time rendering uses GPU-accelerated rasterization and performance-friendly techniques, sometimes sacrificing photorealism to maintain speed.
+
+\textbf{Offline (non-real-time) rendering} prioritizes maximum quality and realism and may take minutes to hours per frame. It can use computationally expensive techniques such as global illumination, ray tracing, and path tracing, and is common in feature films and high-end visualization.
+
+\textbf{Summary:}
+\begin{itemize}
+    \item \textbf{Real-time:} Speed first; interactivity second $\rightarrow$ used in games and VR.
+    \item \textbf{Offline:} Quality first; speed second $\rightarrow$ used in movies and high-end VFX.
+\end{itemize}
+
+\subsection{Hard vs. Soft Real-Time}
+
+\textbf{Hard real-time} in computer graphics means missing a deadline (e.g., failing to render a frame within a strict time limit) is unacceptable and can cause unsafe or catastrophic outcomes. Examples include safety-critical simulators or medical/aerospace systems.
+
+	\textbf{Soft real-time} means missing a deadline degrades quality (e.g., dropped frames, stutter) but the system continues operating. This is typical in games and multimedia\\playback.
+
+\textbf{Summary:}
+\begin{itemize}
+    \item \textbf{Hard real-time:} Deadline misses are unacceptable (e.g., safety-critical medical/aerospace systems).
+    \item \textbf{Soft real-time:} Deadline misses degrade quality but the system continues (e.g., games, video playback).
+\end{itemize}
+
+\end{document}
