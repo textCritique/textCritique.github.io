@@ -284,3 +284,54 @@ fn main() {
 ```
 Note : A unicode scalar value range from `U+0000` to `U+D7FF` and `U+E000` to `U+10FFFF` inclusive.
 
+### tuple
+
+It is a collection of values of heterogenous data type. It is of fixed size and once declared then it cannot be modified.
+We can do patern matching similar to OCaml and Python. Example:
+
+```rust
+
+fn main() {
+    let tup: (i32, f64, u8) = (500, 6.4, 1);
+    println!("{:?}", tup);
+
+    let t = (1, 42.3, 'A');
+
+    let (x, y, z) = t;
+    println!("The value of x = {x}, y = {y}, z = {z}");
+
+    println!("Accessing 1st element of tup = {}", tup.0);
+}
+ 
+```
+
+```
+(500, 6.4, 1)
+The value of x = 1, y = 42.3, z = A
+Accessing 1st element of tup = 500  
+```
+{: file="Output"}
+
+The tuple with no values is called **unit** and written as `()`. Expressions implicitly return this type is they do not return anything.
+
+### array
+
+It is a collection of values of same type and has fixed length.
+Example:
+
+```rust
+
+fn main() {
+    // simple array initialization
+    let a = [1, 2, 3, 4];
+
+    // specifying type and size
+    let a: [i32; 5] = [1, 2, 3, 4, 5];
+
+    // specifying array of size 10 with initital value 0
+    let a = [0; 10];
+}
+
+```
+
+We can access each element like so `a[n]`.
