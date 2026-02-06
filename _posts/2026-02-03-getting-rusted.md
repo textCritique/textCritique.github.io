@@ -312,7 +312,7 @@ Accessing 1st element of tup = 500
 ```
 {: file="Output"}
 
-The tuple with no values is called **unit** and written as `()`. Expressions implicitly return this type is they do not return anything.
+The tuple with no values is called **unit** and written as `()`. Expressions implicitly return this type if they do not return anything.
 
 ### array
 
@@ -335,3 +335,107 @@ fn main() {
 ```
 
 We can access each element like so `a[n]`.
+
+
+## functions
+
+Rust does not care if function which we are calling inside the `main` is defined after `main` or before it, as long as it is in scope.
+
+This is quite different from **C/C++** where we would have to give function declaration (function prototype) if we want to define function after the `main` and call it in `main`.
+
+Example:
+
+```rust
+
+fn main() {
+    println!("Hello, world!");
+    some_fun();
+}
+
+fn some_fun() {
+    println!("Called some_fun()");
+}
+
+```
+
+```
+Hello, world!
+Called some_fun()
+```
+{: file="Output"}
+
+### parameters
+
+Rust requires type of parameters to be specified. 
+
+Example:
+
+```rust
+
+fn main() {
+    some_fun(3);
+}
+
+fn some_fun(x: i32) {
+    println!("{x} was passed.");
+}
+
+```
+
+```
+3 was passed.
+```
+{: file= "Output"}
+
+
+### statements and expressions
+
+**Statements** are instructions that does something but do not return a value.
+**Expressions** are instructions that evaluates to a value. That value is returned.
+
+In Rust, assignment is a statement. So chain assignment is not possible like in C or Python. Something like `let x = (let y = 0)`will result in error.
+
+Examples of expressions include *math expression*, *called function*, *called macro*. A new scope block created with curly brackets is an expression.
+Example:
+
+```rust
+fn main() {
+    let y = {
+        let x = 5;
+        x * 5
+    };
+
+    println!("Value of y: {y}");
+}
+``` 
+
+```
+Value of y: 25
+```
+{: file= "Output"}
+
+
+Like OCaml, Rust uses semicolon  `;` to separate statements and expression do not need `;` at the end.
+Sufixing expression with `;` turns it into statementi which will return unit type `()`.
+
+### return values of function
+
+When we want to return a value from a function we have annotate it using arrow `->`. Much like OCaml, the last expression in a function body serves as the return value of the function. We could also do `return expression;`.
+Example:
+
+```rust
+
+fn main() {
+    println!("{}", five());
+}
+
+fn five() -> i32 {
+    5 // or return 5;
+}
+
+``` 
+
+```
+5
+```
+{: file="Output"}
