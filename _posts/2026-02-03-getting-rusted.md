@@ -439,3 +439,298 @@ fn five() -> i32 {
 5
 ```
 {: file="Output"}
+
+## control flow
+
+The **control flow** is a  language construct that helps to execute the statements selectively and repeatedly.
+
+### if Expressions
+
+In Rust, conditional expression is not enclosed within `()`. Unlike many languages, if we put any other expression instead of conditional expression, compiler(or interpreter) tries to evaluate (or convert) into boolean value. Rust throws error in this case.
+Example:
+
+```rust
+
+fn main() {
+    let not_zero = 5;
+
+    if not_zero {
+        println!("Not a zero.");
+    } else {
+        println!("Zero");
+    }
+}
+```
+
+```console
+
+> cargo run
+   Compiling control-flow v0.1.0 (/home/i3/c/rust/control-flow)
+error[E0308]: mismatched types
+ --> src/main.rs:4:8
+  |
+4 |     if not_zero {
+  |        ^^^^^^^^ expected `bool`, found integer
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `control-flow` (bin "control-flow") due to 1 previous error
+```
+
+The block of code associated with each `if` expression is called **arm**.
+
+### multiple conditions with else if
+
+Example:
+
+```rust
+fn main() {
+    let n = 6;
+
+    print!("{n} is divisible by");
+
+    if n % 4 == 0 {
+        println!(" 4");
+    } else if n % 3 == 0 {
+        println!(" 3");
+    } else if n % 2 == 0 {
+        println!(" 2");
+    } else {
+        println!(" 1");
+    }
+}
+```
+
+```
+6 is divisible by 3
+```
+{: file= "Output"}
+
+Here, 6 is divisble by 3 as well as 2, but this whole conditional will only execute first true statement only as in many languages.
+
+### using if in a let statement
+
+As `if` is an expression, we can use it right side of a let statement to assign the outcome to a variable.
+
+Example:
+
+```rust
+use std::io;
+
+fn main() {
+    let mut num = String::new();
+
+    println!("Enter a number:");
+
+    io::stdin()
+        .read_line(&mut num)
+        .expect("Could not read the value");
+
+    let num: i32 = match num.trim().parse() {
+        Ok(n) => n,
+        Err(_) => {
+            println!("Input is not a number!");
+            return;
+        }
+    };
+
+    let num = if num % 2 == 0 { "even" } else { "odd" };
+
+    println!("Entered number is {num}.");
+}
+```
+
+```
+Enter a number:
+5
+Entered number is odd.
+```
+{: file= "Output"}
+
+Note: The blocks of code demarcated by `{}` evaluates to last expression in them (and last expression does not end with `;`). Also, all the arms of `if` expression should evaluate to same type. Otherwise, compiler will throw an error. Example:
+
+```rust
+
+fn main() {
+    let condition = false;
+
+    let value = if condition { 1 } else { "one" };
+
+    println!("value: {}", value);
+}
+  
+```
+
+error[E0308]: `if` and `else` have incompatible types
+ --> src/main.rs:4:43
+  |
+4 |     let value = if condition { 1 } else { "one" };
+  |                                -          ^^^^^ expected integer, found `&str`
+  |                                |
+  |                                expected because of this
+
+For more information about this error, try `rustc --explain E0308`.
+
+
+```
+{: file = "Output"}
+
+
+## repeating code with loop
+
+It is a forever loop. We can exit this loop (or any variant of loop ) using `break` statement.
+Example.
+
+```rust
+fn main() {
+    loop {
+        println!("forever and ever");
+    }
+}
+```
+
+### returning values from loops
+
+We can return values from the loop and use it as expression. Example:
+
+```rust
+
+fn main() {
+    let mut counter = 0;
+    let mut accumulator = 1;
+
+    let two_raised_ten = loop {
+        accumulator *= 2;
+        counter += 1;
+        if counter == 10 {
+            break accumulator;
+        }
+    };
+
+    println!("Two raised to power ten: {two_raised_ten}");
+}
+
+```
+
+```
+Two raised to power ten: 1024  
+```
+{: file= Output}
+
+Note: `return` can also be used to exit the loop but it has  unintended (or intended) effect of exiting the current function.
+
+
+### name the loops using loop label
+
+If we have nested loop then `break` and `continue` applies to innermost loop only. We can *label* loop so that we can later specify which one we mean we call `break` and `continue`.
+
+Example:
+
+```rust
+
+fn main() {
+    let mut row = 1;
+
+    'outer: loop {
+        let mut column = row;
+
+        loop {
+            if row == 5 {
+                break 'outer;
+            }
+            print!("{column}    ");
+            column += row;
+
+            if column == row * 4 {
+                break;
+            }
+        }
+        println!();
+        row += 1;
+    }
+}
+
+```
+
+
+```
+1    2    3    
+2    4    6    
+3    6    9    
+4    8    12 
+```
+{: file= "Output"}
+
+
+### conditional loop with while
+
+Example:
+
+```rust
+
+fn main() {
+    let mut sum = 0;
+    let mut c = 1;
+    while c <= 100 {
+        sum += c;
+        c += 1;
+    }
+
+    println!("Sum of whole no upto 100: {sum}");
+}
+```
+
+```
+Sum of whole no upto 100: 5050 
+```
+{: file= Output}
+
+### looping through a Collection with for
+
+In Rust, there is canonical way to iterate through an array (or similar data structure) throught the use `for` loop. It is considered safer and faster alternative to other loop.
+Example:
+
+```rust
+
+fn main() {
+    let a = [1, 2, 3, 4, 5];
+
+    for element in a {
+        println!("{}", element);
+    }
+}
+
+```
+
+
+```
+1
+2
+3
+4
+5 
+```
+{: file= "Output"}
+
+There is Python equivalent of range function for iteration through the `for` loop.
+Example:
+
+```rust
+
+fn main() {
+    for i in (1..4).rev() {
+        println!("{i}");
+    }
+    println!("Liftoff!");
+}
+
+```
+
+
+```
+3
+2
+1
+Liftoff! 
+```
+{: file="Output"}
+
