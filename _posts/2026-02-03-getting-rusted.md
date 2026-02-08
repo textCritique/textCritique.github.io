@@ -745,7 +745,11 @@ The way stack works is, whenever we assign a variable or pass data (fixed size a
 When variable goes out of scope or the function returns the data is freed from the stack. All the data item is stored consecutively (except the padding) in the stack. It is follows usual *LIFO* pattern.
 
 The data placed in the heap memory are not stored consecutively and it also has other component in the stack that stores the reference (address of the data in the heap). To allocate data on heap, there is extra step (unlike stack) which consist of finding unused space in memory that is not used by other, is of required size and mark it is in current use; instead of just copying the data in the heap. Also data access is also different, as we first have to get the address and then go to that address to get the data.
-The data placed in the heap can only be ever freed when manually done (using `free`). Some garbage collected (GC) based languages free heap data when there is no variable which is pointing to heap data.
+The data placed in the heap can only be ever freed when manually done (using `free`). Some garbage collected (GC) based languages free heap data when there is no variable which is pointing to heap data. This comes at cost of runtime overhead.
+
+The system languages like *C* suffers problem which results from poor memory management (of heap) which has to be done manually. If we forget to free the memory that we allocated that will lead to wastage. If we free the memory too early, it will result in undefined behavior. If we do it more than once, it will still result in a bug.
+
+The **ownership** helps us to pair one allocation with one free.
 
 ### the ownership rules
 
@@ -753,7 +757,7 @@ The data placed in the heap can only be ever freed when manually done (using `fr
 2. There can be only be *one* owner at a time.
 3. When the owner goes out of scope, the value will be dropped.
 
-## variable scope
+### variable scope
 
 Example:
 
@@ -784,3 +788,144 @@ help: the binding `n` is available in a different scope in the same function
 
 ```
 {: file="Output"}
+
+### the string type
+
+We will use string type which uses ownership concept. Following string creates a mutable string which lives on heap ( string literal which is immutable).
+
+> Double colon `::` is used here specify the namespace just like **C++**.
+{: .prompt-tip}
+
+```rust
+fn main() {
+    let mut greet = String::from("hello, ");
+    greet.push_str("universe");
+    println!("{greet}");
+}
+```
+
+```
+hello, universe 
+```
+{: file="Output"}
+
+Here, `String::from` allocates the memory on the heap. When runtime system encounter `}`, Rust calls `drop` funtion automatically on each heap variable which frees the memory on the heap.
+
+> Similar pattern of resource disallocation exists in **C++** called **Resource Allocation Is Initialization**.
+{: .prompt-info}
+
+### variable and data interacting with Move
+
+In case of the variable of simple data type (which has fixed size and small enough), if we try to reassign it to different variable
+it will just copy the contents.
+Example:
+
+```rust
+
+fn main() {
+    let x = 3;
+    let y = x;
+    println!("{x} and {y}");
+}
+```
+
+```
+3 and 3 
+```
+{: file="Output"}
+
+But it in the case of variable pointing to data on the heap, when we reassign original variable to another variable, the ownership to new variable and the original variable goes out of scope.
+Example:
+
+```rust
+
+fn main() {
+    let original = String::from("rust");
+    let moved = original;
+
+    println!("moved = {moved} and original = {original}");
+}
+```
+
+```
+ error[E0382]: borrow of moved value: `original`
+ --> src/main.rs:5:47
+  |
+2 |     let original = String::from("rust");
+  |         -------- move occurs because `original` has type `String`, which does not implement the `Copy` trait
+3 |     let moved = original;
+  |                 -------- value moved here
+4 |
+5 |     println!("moved = {moved} and original = {original}");
+  |                                               ^^^^^^^^ value borrowed here after move
+  |
+  = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider cloning the value if the performance cost is acceptable
+  |
+3 |     let moved = original.clone();
+  |                         ++++++++
+
+For more information about this error, try `rustc --explain E0382`. 
+```
+{: file="Output"}
+
+The compiler output clearly suggest that `original` variable is no longer valid. It has **moved** to `moved` variable. As we mentioned earlier, Rust frees heap variable when block ends by calling `drop` on each heap variable. But we have more than one variable refering to same heap data, then it will result in multiple frees.This borrowing mechanism avoids that.
+
+> In **Python**, if we assign a variable storing heap data (like List) to another variable, it creates a **shallow** copy. So both variable point to same location in heap. In Rust, there is no such concept. What we have is **move** ownership to another. It has concept of **deep copy** though where heap data is **clone**.
+{: prompt-tip}
+
+
+### scope and assignment
+
+Whenever we try to assign new value to variable that is storing heap data initially, the variable will store new value and previous heap data will be deallocated immediately.
+
+
+### variables and data interacting with clone
+
+If we want do **deep copy** of heap data along with stack data associated with a variable, we can run `clone` method on it.
+
+```rust
+fn main() {
+    let s = String::from("ciao");
+    let s2 = s.clone();
+
+    println!("s = {s} and s2 = {s2}");
+}
+
+```
+  
+```
+s = ciao and s2 = ciao
+```
+{: file="Output"}
+
+### stack-only data: copy
+
+Whenever we use simple data type, data is copied if we assign a variable to another variable. There is no concept of *shallow* and *deep* copy, so no need to clone.
+
+Example:
+
+```rust
+
+fn main() {
+    let t = (5, 'a', "some", 4.3);
+    let t2 = t;
+
+    println!("t = {:?}", t);
+    println!("t2 = {:?}", t2);
+}
+```
+
+```
+t = (5, 'a', "some", 4.3)
+t2 = (5, 'a', "some", 4.3) 
+```
+{: file="Output"}
+
+This kind of behavior specifically exhibited by types that implements **trait called `Copy`**. Here are common types that implements `Copy`:
+
+- All the integer types.
+- All floating types.
+- The Boolean type.
+- The character type.
+- Tuples that consist of type that implement `Copy`.
