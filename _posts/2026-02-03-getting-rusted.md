@@ -734,3 +734,53 @@ Liftoff!
 ```
 {: file="Output"}
 
+
+## ownership
+
+The what makes Rust Rust is the idea of **ownership**. It is the set of rules that dictates how Rust program manages the memory.
+
+In other languages like *C*, memory management works as follows. First there are two different areas of memory : **stack** and **heap**. Any data whose size is known and fixed is placed in the stack (data like numeric literals, string literals and booleans come under this category). Other data items, like string buffers, whose size is dynamic and not known at compile time are placed in the heap (by calling `malloc` or similar).
+
+The way stack works is, whenever we assign a variable or pass data (fixed size and small enough so that it is copied) to function, that data is copied in the stack memory.
+When variable goes out of scope or the function returns the data is freed from the stack. All the data item is stored consecutively (except the padding) in the stack. It is follows usual *LIFO* pattern.
+
+The data placed in the heap memory are not stored consecutively and it also has other component in the stack that stores the reference (address of the data in the heap). To allocate data on heap, there is extra step (unlike stack) which consist of finding unused space in memory that is not used by other, is of required size and mark it is in current use; instead of just copying the data in the heap. Also data access is also different, as we first have to get the address and then go to that address to get the data.
+The data placed in the heap can only be ever freed when manually done (using `free`). Some garbage collected (GC) based languages free heap data when there is no variable which is pointing to heap data.
+
+### the ownership rules
+
+1. Each value in Rust has an **owner**
+2. There can be only be *one* owner at a time.
+3. When the owner goes out of scope, the value will be dropped.
+
+## variable scope
+
+Example:
+
+```rust
+
+fn main() {
+    {
+        let n = 42;
+        println!("Inside the new block scope: {n}");
+    }
+    // here n is goes out of scope
+    println!("Outside the block scope: {n}");
+}
+```
+
+```
+For more information about this error, try `rustc --explain E0425`. 
+  --> src/main.rs:7:41
+  |
+7 |     println!("Outside the block scope: {n}");
+  |                                         ^
+  |
+help: the binding `n` is available in a different scope in the same function
+ --> src/main.rs:3:13
+  |
+3 |         let n = 42;
+  |             ^
+
+```
+{: file="Output"}
