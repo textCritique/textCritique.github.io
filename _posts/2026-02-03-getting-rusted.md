@@ -929,3 +929,76 @@ This kind of behavior specifically exhibited by types that implements **trait ca
 - The Boolean type.
 - The character type.
 - Tuples that consist of type that implement `Copy`.
+
+### ownership and functions
+
+Similar to assignment of variable containing heap data to another variable, ownership transfer occurs when we pass variable containing heap data as a argument to a function.
+
+Examples:
+
+```rust
+
+fn main() {
+    let s = String::from("ohayo"); // here heap data is initialized and ownership is given to s
+    takes_ownership(s); // after passing s as argument, ownership is passed to function, stack data like string length is copied and s can no longer be used access heap data
+} // here s variable popped from stack 
+
+fn takes_ownership(s: String) {
+    println!("{s} is of length = {}", s.len())
+} // s goes goes out scope and so heap data is freed
+```
+
+```
+ohayo is of length = 5 
+```
+{: file="Output"}
+
+
+In case of variable containing data type implementing ***Copy* trait**, we have copying of data as expected.
+
+```rust
+
+fn main() {
+    let t = (5, 'a', "some", 4.3);
+    make_copy(t);
+    println!("Inside main: {:?}", t);
+}
+
+fn make_copy(tupl: (i32, char, &'static str, f32)) {
+    println!("Outside main: {:?}", tupl);
+}
+```
+
+```
+Outside main: (5, 'a', "some", 4.3)
+Inside main: (5, 'a', "some", 4.3) 
+```
+{: file="Output"}
+
+### return values and scope
+
+Just like passing variable containing heap data as argument to a function *moves* ownership to that function, returning values from the function also moves back ownership. Example:
+
+```rust
+
+fn main() {
+    let s = gives_ownership(); // s takes ownership of the returned String
+    let s = takes_and_gives_back(s); // s is moved into the function and then returned
+    println!("{s}"); // s is valid here again
+}
+
+fn gives_ownership() -> String {
+    String::from("Ohayo") // returns ownership of the String to the caller
+}
+
+fn takes_and_gives_back(mut s2: String) -> String {
+    s2.push_str(" gozaimasu!"); // mutably borrow and modify s2
+    s2 // return ownership of s2 
+}
+```
+
+
+```
+Ohayo gozaimasu! 
+```
+{: file="Output"}
