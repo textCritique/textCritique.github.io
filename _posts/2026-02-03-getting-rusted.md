@@ -74,7 +74,7 @@ edition = "2026"
 ```
 {: file="Cargo.toml"}
 
-Additionally, cargo also creates `.gitignore` file if created outside any git tracked directory. 
+Additionally, cargo intializes local git repository and also creates `.gitignore` file if created outside any git tracked directory. 
 
 If project folder is already created then to initialize a project using do the following:
 
@@ -117,9 +117,9 @@ To consult doc of libraries that we are currently using inside our project, run 
 
 ## Variable and Mutability
 
-In Rust, varibles are immutable by default. We have special syntax for declaring a mutable varible.
+In Rust, variable are immutable by default. We have special syntax for declaring a mutable variable.
 
-So, trying to modify a mutable varible results in error.
+So, trying to modify a mutable variable results in error.
 For example:
 
 ```rust
@@ -131,7 +131,7 @@ fn main() {
 }
 ```
 
-We can declare mutable varible by prefixing variable name with `mut`keyword.
+We can declare mutable varible by prefixing variable name with `mut` keyword.
 For example:
 
 ```rust
@@ -181,9 +181,9 @@ The value of x is: 3
 The value of x is: 15
 The value of x is: 3
 ```
-{: file = "Output" }
+{:file="Output" }
 
-One important thing to note that we are effectively creating a new variable everytime we do shadowing, so we can change type of the variable while reusing the same name. On the other hand if we can change value of the variable but not the type when using mutable variable.
+One important thing to note that we are effectively creating a new variable everytime we do shadowing, so we can change type of the variable while reusing the same name. On the other hand we can only change value of the mutable variable but not the type. 
 
 ## Data types
 
@@ -197,7 +197,7 @@ There are four types of scalar:
 
 ### integer
 
-There many variants of ints based on size and signed/unsigned, summarize in the table below.
+There many variants of ints based on size and signed/unsigned, summarized in the table below.
 
 | Length | Signed | Unsigned |
 |--------|--------|----------|
@@ -222,7 +222,7 @@ Things to keep in mind:
 
 1. When rust infers a int, it defaults to i32.
 2. If we want specific type, literal can be suffixed with type like so `42u8`.
-3. If overflow happens it is handled differntly depending on compilation mode. In **dev mode** , compiler throws an error. In **release mode**, compiler does wrapping (of 2's complement).
+3. If overflow happens it is handled differently depending on compilation mode. In **dev mode** , compiler throws an error. In **release mode**, compiler does wrapping (of 2's complement).
 4. `_` can be used as visual separator between the digits.
 5. Range of n bit signed int is **-(2^(n-1))** to **2^(n-1)-1**.
 6. Range of n bit unsigned int is **0** to **2^n -1**.
@@ -287,7 +287,7 @@ Note : A unicode scalar value range from `U+0000` to `U+D7FF` and `U+E000` to `U
 ### tuple
 
 It is a collection of values of heterogenous data type. It is of fixed size and once declared then it cannot be modified.
-We can do patern matching similar to OCaml and Python. Example:
+We can do pattern matching similar to OCaml and Python. Example:
 
 ```rust
 
@@ -393,7 +393,7 @@ fn some_fun(x: i32) {
 **Statements** are instructions that does something but do not return a value.
 **Expressions** are instructions that evaluates to a value. That value is returned.
 
-In Rust, assignment is a statement. So chain assignment is not possible like in C or Python. Something like `let x = (let y = 0)`will result in error.
+In Rust, assignment is a statement. So chain assignment is not possible unlike C or Python. Something like `let x = (let y = 0)`will result in error.
 
 Examples of expressions include *math expression*, *called function*, *called macro*. A new scope block created with curly brackets is an expression.
 Example:
@@ -416,7 +416,7 @@ Value of y: 25
 
 
 Like OCaml, Rust uses semicolon  `;` to separate statements and expression do not need `;` at the end.
-Sufixing expression with `;` turns it into statementi which will return unit type `()`.
+Sufixing expression with `;` turns it into statement which will return unit type `()`.
 
 ### return values of function
 
@@ -446,7 +446,7 @@ The **control flow** is a  language construct that helps to execute the statemen
 
 ### if Expressions
 
-In Rust, conditional expression is not enclosed within `()`. Unlike many languages, if we put any other expression instead of conditional expression, compiler(or interpreter) tries to evaluate (or convert) into boolean value. Rust throws error in this case.
+In Rust, conditional expression is not enclosed within `()`. In many languages if we put any other expression instead of conditional expression, compiler(or interpreter) tries to evaluate (or convert) into boolean value. But Rust throws error in this case.
 Example:
 
 ```rust
@@ -503,7 +503,7 @@ fn main() {
 ```
 6 is divisible by 3
 ```
-{: file= "Output"}
+{:file="Output"}
 
 Here, 6 is divisble by 3 as well as 2, but this whole conditional will only execute first true statement only as in many languages.
 
@@ -544,7 +544,7 @@ Enter a number:
 5
 Entered number is odd.
 ```
-{: file= "Output"}
+{:file="Output"}
 
 Note: The blocks of code demarcated by `{}` evaluates to last expression in them (and last expression does not end with `;`). Also, all the arms of `if` expression should evaluate to same type. Otherwise, compiler will throw an error. Example:
 
@@ -560,6 +560,7 @@ fn main() {
   
 ```
 
+```
 error[E0308]: `if` and `else` have incompatible types
  --> src/main.rs:4:43
   |
@@ -570,9 +571,8 @@ error[E0308]: `if` and `else` have incompatible types
 
 For more information about this error, try `rustc --explain E0308`.
 
-
 ```
-{: file = "Output"}
+{:file="Output"}
 
 
 ## repeating code with loop
@@ -614,7 +614,7 @@ fn main() {
 ```
 Two raised to power ten: 1024  
 ```
-{: file= Output}
+{:file="Output"}
 
 Note: `return` can also be used to exit the loop but it has  unintended (or intended) effect of exiting the current function.
 
@@ -658,7 +658,7 @@ fn main() {
 3    6    9    
 4    8    12 
 ```
-{: file= "Output"}
+{:file="Output"}
 
 
 ### conditional loop with while
@@ -682,7 +682,7 @@ fn main() {
 ```
 Sum of whole no upto 100: 5050 
 ```
-{: file= Output}
+{:file="Output"}
 
 ### looping through a Collection with for
 
@@ -709,7 +709,7 @@ fn main() {
 4
 5 
 ```
-{: file= "Output"}
+{:file="Output"}
 
 There is Python equivalent of range function for iteration through the `for` loop.
 Example:
@@ -753,7 +753,7 @@ The **ownership** helps us to pair one allocation with one free.
 
 ### the ownership rules
 
-1. Each value in Rust has an **owner**
+1. Each value in Rust has an **owner**.
 2. There can be only be *one* owner at a time.
 3. When the owner goes out of scope, the value will be dropped.
 
@@ -807,7 +807,7 @@ fn main() {
 ```
 hello, universe 
 ```
-{: file="Output"}
+{:file="Output"}
 
 Here, `String::from` allocates the memory on the heap. When runtime system encounter `}`, Rust calls `drop` funtion automatically on each heap variable which frees the memory on the heap.
 
@@ -871,8 +871,8 @@ For more information about this error, try `rustc --explain E0382`.
 
 The compiler output clearly suggest that `original` variable is no longer valid. It has **moved** to `moved` variable. As we mentioned earlier, Rust frees heap variable when block ends by calling `drop` on each heap variable. But we have more than one variable refering to same heap data, then it will result in multiple frees.This borrowing mechanism avoids that.
 
-> In **Python**, if we assign a variable storing heap data (like List) to another variable, it creates a **shallow** copy. So both variable point to same location in heap. In Rust, there is no such concept. What we have is **move** ownership to another. It has concept of **deep copy** though where heap data is **clone**.
-{: prompt-tip}
+> In **Python**, if we assign a variable storing heap data (like List) to another variable, it creates a **shallow** copy. So both variable point to same location in heap. In Rust, there is no such concept. What we have is **move** ownership to another. It has concept of **deep copy** though where heap data is **clone**d.
+{: .prompt-tip}
 
 
 ### scope and assignment
