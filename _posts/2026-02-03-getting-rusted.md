@@ -1002,3 +1002,260 @@ fn takes_and_gives_back(mut s2: String) -> String {
 Ohayo gozaimasu! 
 ```
 {: file="Output"}
+
+
+## References and Borrowing
+
+There is another way to access heap data outside the original scope of the variable refering heap data without transfering the ownership called **references**. References are like pointers in the senese that it stores address of heap data.
+Unlike pointer, it always points to valid value of certain type during its lifetime.
+
+```rust
+
+fn main() {
+    let s = String::from("Namaste");
+    let len = calc_len(&s);
+    println!("String = {s} and its length = {len}");
+}
+
+fn calc_len(string: &str) -> usize {
+    string.len()
+}
+```
+
+```
+String = Namaste and its length = 7 
+```
+{:file="Output"}
+
+Here, `&` denotes reference like address operator of C. We have specify we are passing reference in the type signature of function.
+
+![diagram of reference of existing variable](/assets/images/references_getting_rusted.png)
+_Diagram visualizing references_
+
+
+> The opposite of referencing is called dereferencing and denoted by `*`.
+{:.prompt-tip}
+
+
+The act of creating a reference is called **borrowing**. Borrowed data items cannot be modified by default. Example:
+
+```rust
+fn main() {
+    let s = String::from("hell");
+    change(&s);
+}
+
+fn change(some_str: &String) {
+    some_str.push_str("o");
+}
+```
+
+```
+  Compiling reference v0.1.0 (/home/i3/c/rust/reference)
+error[E0596]: cannot borrow `*some_str` as mutable, as it is behind a `&` reference
+ --> src/main.rs:7:5
+  |
+7 |     some_str.push_str("o");
+  |     ^^^^^^^^ `some_str` is a `&` reference, so it cannot be borrowed as mutable
+  |
+help: consider changing this to be a mutable reference
+  |
+6 | fn change(some_str: &mut String) {
+  |                      +++
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `reference` (bin "reference") due to 1 previous error  
+```
+{:file="Output"}
+
+
+### mutable references
+
+We can also modify borrowed value using mutable reference. Example:
+
+```rust
+
+fn main() {
+    let mut s = String::from("hell");
+    change(&mut s);
+    println!("{s}");
+}
+
+fn change(some_str: &mut String) {
+    some_str.push_str("o");
+}
+```
+
+```
+hello
+```
+{:file="Output"}
+
+There can be only one mutable reference at a time. Compiler enforces it. This is to prevent **data races** which can cause undefined behavior. Example:
+
+```rust
+
+fn main() {
+    let mut s = String::from("hello");
+    let r = &mut s;
+    let r2 = &mut s;
+    println!("r = {r}, r2 = {r2}");
+}
+```
+
+```
+   Compiling reference v0.1.0 (/home/i3/c/rust/reference)
+error[E0499]: cannot borrow `s` as mutable more than once at a time
+ --> src/main.rs:4:14
+  |
+3 |     let r = &mut s;
+  |             ------ first mutable borrow occurs here
+4 |     let r2 = &mut s;
+  |              ^^^^^^ second mutable borrow occurs here
+5 |     println!("r = {r}, r2 = {r2}");
+  |                    - first borrow later used here
+
+For more information about this error, try `rustc --explain E0499`.
+error: could not compile `reference` (bin "reference") due to 1 previous error  
+```
+{:file="Output"}
+
+Data races can occur due following:
+1. Two or more pointers access the same data at same time.
+2. At least one of the pointer is used to modify the data.
+3. There is no mechanism used to synchronize the data.
+
+
+We cannot have multiple mutable references at the same time. However, we can have mutltiple mutable references which are active at different time, say in different scope. Example:
+
+```rust
+
+fn main() {
+    let mut s = String::from("rust");
+    {
+        let r = &mut s;
+        r.push_str("r");
+        println!("r = {r}");
+    }
+    let r2 = &mut s;
+    r2.push_str("r2");
+    println!("r2 = {r2}");
+}
+```
+
+```
+r = rustr
+r2 = rustrr2
+```
+{:file="Output"}
+
+However, there is no restriction on how many immutable references we have. Examples:
+
+```rust
+
+fn main() {
+    let s = String::from("rust");
+    let r = &s;
+    let r2 = &s;
+    let r3 = &s;
+    println!("{r}, {r2} and {r3}");
+}
+```
+
+```
+rust, rust and rust  
+```
+{:file="Output"}
+
+Also, we cannot have mutable and immutable reference at the same time for obvious reasons. Example:
+
+```rust
+fn main() {
+    let mut s = String::from("rust");
+    let r = &s;
+    let r2 = &mut s;
+    println!("r ={r} and r2 ={r2}");
+}
+```
+
+```
+   Compiling reference v0.1.0 (/home/i3/c/rust/reference)
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+ --> src/main.rs:4:14
+  |
+3 |     let r = &s;
+  |             -- immutable borrow occurs here
+4 |     let r2 = &mut s;
+  |              ^^^^^^ mutable borrow occurs here
+5 |     println!("r ={r} and r2 ={r2}");
+  |                   - immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `reference` (bin "reference") due to 1 previous error  
+```
+
+Note: Reference's scope starts from where it is introduced and ends when it is last used (instead of when `}` is encountered). So following compiles.
+
+```rust
+fn main() {
+    let mut s = String::from("rust");
+    let r = &s;
+    let r2 = &s;
+
+    println!("{r} and {r2}");
+    let r3 = &mut s;
+    println!("{r3}");
+}
+```
+
+```
+rust and rust
+rust  
+```
+
+### dangling references
+
+In languages like C, there is possibility of having pointer point to location in heap memory which has been freed, which are called **dangling pointer**. In Rust analogous **dangling references** can be created but compiler won't allow code to compile with dangling references. Example:
+
+```rust
+
+fn main() {
+    let s = dangle();
+    println!("{s}");
+}
+
+fn dangle() -> &String {
+    let s = String::from("ink");
+    &s
+}
+```
+
+```
+   Compiling reference v0.1.0 (/home/i3/c/rust/reference)
+error[E0106]: missing lifetime specifier
+ --> src/main.rs:6:16
+  |
+6 | fn dangle() -> &String {
+  |                ^ expected named lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value, but there is no value for it to be borrowed from
+help: consider using the `'static` lifetime, but this is uncommon unless you're returning a borrowed value from a `const` or a `static`
+  |
+6 | fn dangle() -> &'static String {
+  |                 +++++++
+help: instead, you are more likely to want to return an owned value
+  |
+6 - fn dangle() -> &String {
+6 + fn dangle() -> String {
+  |
+
+For more information about this error, try `rustc --explain E0106`.
+error: could not compile `reference` (bin "reference") due to 1 previous error  
+```
+
+In the error message it is clearly suggested that borrowed value becomes invalid, so ownership transfer better suited (i.e. returning `String` instead of `&String`).
+
+### the rules of references
+
+1. At any given time, we can have either one *mutable* reference or any number of *immutable* references.
+2. References must always point to valid data.
