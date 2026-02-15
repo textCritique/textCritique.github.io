@@ -1259,3 +1259,65 @@ In the error message it is clearly suggested that borrowed value becomes invalid
 
 1. At any given time, we can have either one *mutable* reference or any number of *immutable* references.
 2. References must always point to valid data.
+
+### the slice type
+
+**The slice** is a kind of reference that let us access contiguous sequence of elements in a *collection*. Hence, variable with type slice does not own it.
+
+#### string slices
+
+A **string slice** is a reference to a contiguous sequence of a char (or UTF code) comprising the `String`. The type of string slice is `&str`.
+We create slices by specifying `start_index` and `end_index` inside the brackets. `start_index` is same as index of the first character of the slice and `end_index` is one more than index of the last character of the slice. Example:
+
+```rust
+fn main() {
+    let s = String::from("This is one short sentence.");
+    let slice = &s[5..8];
+    let slice2 = &s[..5]; // start_index is assumed to be 0
+    let slice3 = &s[8..]; // end_index is assumed to be length of s
+    let slice4 = &s[..]; // start_index = 0 & end_index = length of s
+
+    let array_of_slices = [slice, slice2, slice3, slice4];
+
+    for i in array_of_slices {
+        println!("{i}");
+    }
+}
+```
+
+```
+is 
+This 
+one short sentence.
+This is one short sentence.  
+```
+{:file="Output"}
+
+> If we are working with UTF-8 string, we need make sure that string slice range indices occur at valid UTF-8 character boundaries. If we create slice somewhere in the middle of the multibyte character, then our program will crash.
+{: .prompt-warning}
+
+##### string literals as slices
+
+String literals are stored in the binary of the executable. When we use string literals like `let s = "text";`, we are actually referring to the immutable reference. The type of string literal is `&str`.
+
+> In parameter of funcion, we should prefer `&str` over `&String`, because it will work with the both types.
+{: .prompt-tip}
+
+#### other slices
+
+There are other kind of slices that work on *collections*. Example:
+
+```rust
+fn main() {
+    let a = [1, 2, 3, 4, 5, 6];
+    let slice = &a[2..];
+    println!("{:?}", slice);
+}
+```
+
+```
+[3, 4, 5, 6]  
+```
+{:file="Output"}
+
+Above slice has the type `&[i32]`. It works similarly to string slices.
