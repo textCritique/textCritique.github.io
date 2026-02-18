@@ -290,7 +290,7 @@ _Cardioid image_
 
 The Mandelbrot set is defined as the set of points (x, y) for which following sequences do not tend to infinity in absolute value.
 
-![recursive sequences](/assets/mandelbrot_eq.png)
+![recursive sequences](/assets/images/mandelbrot_eq.png)
 _Sequences defining Mandelbrot set_
 
 It is known that sequence tend to infinity as soon as `x_n**2 + y_n**2 > 4`.
