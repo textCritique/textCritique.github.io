@@ -185,6 +185,7 @@ let () =
   let pi = 4.0 *. float !points_inside_circle /. float n in
   Printf.printf "%f\n" pi
 ```
+{:file="approx_pi.ml"}
 
 ```console
 
@@ -279,6 +280,7 @@ let () =
   done;
   ignore (read_key ())
 ```
+{:file="cardioid.ml"}
 
 Compile and run from the root folder using `dune exec ./cardioid.exe`.
 
@@ -335,6 +337,7 @@ let () =
   ignore (read_key ())
 
 ```
+{:file="mandelbrot.ml"}
 
 Compiling and executing we get
 
@@ -363,3 +366,67 @@ let rec f x = ... g ...
 and     g x = ... f ...
 
 ```
+
+### the sieve of eratosthenes (5th program)
+
+It is algorithm for finding the primes numbers upto given number `N`. Idea is to start with a list of numbers from 2 to N. We pick first uncrossed number (number which is not yet been eliminated as composite number). We then leave that number as it is but mark
+all its multiples as crossed (meaning as eliminated from primes). Then we repeat this process for next uncrossed number. This stops when current uncrossed number n satisfies `n*n > N`.
+
+```ocaml
+
+let () = print_string "N = "
+(* largest number to check for number *)
+let max = read_int ()
+
+(* stores if i is prime or not, where i is the index of the array *)
+let is_primes = Array.make (max + 1) true
+
+let () =
+  is_primes.(0) <- false;
+  is_primes.(1) <- false;
+  let limit = truncate (float max ** 0.5) in
+  for n = 2 to limit do
+    if is_primes.(n) then begin
+      let m = ref (n*n) in
+      while !m <= max do
+        is_primes.(!m) <- false;
+        m := !m + n
+      done
+    end
+  done
+
+(* iterating through is_primes and printing all the primes less than or equal to max *)
+
+let () =
+  print_endline "Primes less or equal to N";
+  for i = 0 to Array.length is_primes - 1 do
+    if is_primes.(i) then Printf.printf "%d\n" i;
+  done
+
+```
+
+```console
+N = 42
+Primes less or equal to N
+2
+3
+5
+7
+11
+13
+17
+19
+23
+29
+31
+37
+41
+```
+{:file="Output"}
+
+Note:
+1. `begin-end` works in the same way as `()` but convention is to used them to group the instructions that are imperative in nature.
+2. Array can be explicitly constructed by `let arr = [|3; 2; 1|];;`. It can be also be nested like `let matrix = [| [|1; 0|]; [|0; 1|]|]`
+
+> To initialize a matrix of given dimension, use `Array.make_matrix` instead of nested `Array.make`.
+{:.prompt-tip}
