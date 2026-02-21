@@ -205,7 +205,7 @@ Note:
 3. There are corresponding floating point arithemetic operator like `+.`, `-.`, `/.` , `*.` and `**`.
 4. We cannot operate on `int` and `float` simultaneously in an expression. We need to convert all numbers to int or float. `truncate` and `float` function can be used to conversion. E.g. :
 `42 /. float 3` and `truncate (exp 1.)`
-
+5. `ref` keyword is used to create a mutable variable. It is a special kind of `record` type with only one field. It can be accessed by prefixing variable with `!` like `!points_inside_circle` and can be later updated using `:=` like `points_inside_circle := !points_inside_circle + 1`.
 
 `let-in` defines scope of variables. The variable defined before `in` are visible after it but variable defined after it are only visible after it and when expression ends those variable goes out of the scope.
 
@@ -404,6 +404,7 @@ let () =
   done
 
 ```
+{:file="sieve.ml"}
 
 ```console
 N = 42
@@ -430,3 +431,162 @@ Note:
 
 > To initialize a matrix of given dimension, use `Array.make_matrix` instead of nested `Array.make`.
 {:.prompt-tip}
+
+### drawing a curve (6th program)
+
+This program will join 2d points by lines in order of points having smaller abcissa , i.e., points are joined from left to right.
+
+```ocaml
+
+open Graphics
+let width = 500
+let height = 500
+
+(* function for reading coordinates form stdin *)
+let read_pair () =
+  print_string "x = "; let x = read_int () in
+  print_string "y = "; let y = read_int () in
+  (x, y)
+
+let n = print_string "No of coordinates: "; read_int ()
+(* reading n number of coordinates from user *)
+let coordinates = Array.init n (fun i -> read_pair ())
+
+let cmp (x,y) (x2,y2) = x - x2
+(* sorting points increasing order of x *)
+let () = Array.sort cmp coordinates
+
+let draw () =
+  moveto (fst coordinates.(0)) (snd coordinates.(0));
+  for i = 1 to n-1 do
+    let (x, y) = coordinates.(i) in
+    lineto x y
+  done;
+  ignore (read_key ())
+
+let () =
+  open_graph (Printf.sprintf " %dx%d" width height);
+  draw ()
+```
+{:file="plot.ml"}
+
+```console
+ocamlopt -I /home/i3/.opam/default/lib/graphics graphics.cmxa plot.ml -o plot
+./plot                   
+No of coordinates: 3
+x = 10
+y = 10
+x = 250
+y = 480
+x = 490
+y = 10
+```
+
+![plot](/assets/images/a-plot.png)
+_Output_
+
+> In OCaml, functions are treated as values and are called **first-class** values. And those functions that receive other functions as arguments is called **higher-order** function.
+{:.prompt-info}
+
+> Tuple types `(int * int) * int`, `int * (int * int)` and `int * int * int` are different types:
+- the first type has first pair of `int` as first component and `int` as second component
+- the second type has `int` as first component and pair of `int` as the second component
+- the third type is triple of `int`s.
+{:.prompt-danger}
+
+#### wild card pattern
+
+If we are trying to find certain components for tuple we can do so as follows.
+
+```console
+
+utop # let x, (y, z), t = (42, ('a', "adi"), 0.);;
+val x : int = 42
+val y : char = 'a'
+val z : string = "adi"
+val t : float = 0.
+─( 01:43:05 )─< command 1 >─────────────────────────────────{ counter: 0 }─
+utop # x;;
+- : int = 42
+─( 01:44:50 )─< command 2 >─────────────────────────────────{ counter: 0 }─
+utop # y;;
+- : char = 'a'
+─( 01:44:56 )─< command 3 >─────────────────────────────────{ counter: 0 }─
+utop # z;;
+- : string = "adi"
+─( 01:45:00 )─< command 4 >─────────────────────────────────{ counter: 0 }─
+utop # t;;
+- : float = 0.
+```
+
+Suppose we only need `x` and `z`, then we could do instead:
+
+```console
+
+utop # let x, (_, z), _ = (42, ('a', "adi"), 0.);;
+val x : int = 42
+val z : string = "adi"
+```
+
+If we only require `x` and `t`. Then :
+
+```console
+
+utop # let x, _ , t = (42, ('a', "adi"), 0.);;
+val x : int = 42
+val t : float = 0.
+```
+
+Above `-` wild character helps us avoid unnecessary variables.
+
+#### records (or tuples with named componenets)
+
+Records need to be defined before they be used in variable.
+Example:
+
+```console
+utop # type point = { x : int; y : int};;
+type point = { x : int; y : int; }
+─( 01:54:42 )─< command 8 >─────────────────────────────────{ counter: 0 }─
+utop # let o = {x = 0; y = 0};;
+val o : point = {x = 0; y = 0}
+─( 02:20:03 )─< command 9 >─────────────────────────────────{ counter: 0 }─
+utop # o;;
+- : point = {x = 0; y = 0}
+─( 02:20:37 )─< command 10 >────────────────────────────────{ counter: 0 }─
+utop # o.x;;
+- : int = 0
+─( 02:20:43 )─< command 11 >────────────────────────────────{ counter: 0 }─
+utop # o.y;;
+- : int = 0
+```
+
+Since, they fields are named, so when initializing them we specify value of field in any order like `let p = {y=1; x=0}`.
+
+It is also possible to create a new `record` with selected values from existing `record`. Example:
+
+```ocaml
+
+type account = {
+  name : string;
+  address : string;
+  acc_no : string;
+  mutable balance : int;
+}
+
+let adi = {balance = 100; acc_no = "123"; address = "Milky way"; name = "adi"}
+
+let adi2 = { adi with balance = 1000; acc_no = "125"};;
+```
+
+Note `mutable` modifier is used in defining a record, so that record of that type created later can be updated without creating a new record. Syntax for updating mutable field *f* of a record *r* is `r.f <- r.f + some_value`. This declaration is imperative so it return unit `()`.
+
+#### anonymous function
+
+The syntax for defining such function is as follows:
+
+```ocaml
+fun <param1> <param2> ... <paramn> -> <some_expression_using_parameters>
+
+```
+We can name them too like `let f = fun x -> x + 1`.
