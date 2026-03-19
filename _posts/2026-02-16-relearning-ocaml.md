@@ -16,7 +16,7 @@ This is another attempt to relearn this fine language from different perspective
 
 ## Installation
 
-I have followed installation from official OCaml. And for associated libraries were installed from ocaml installation script. TODO: add link to installation script and official website.
+I have followed installation from [official OCaml](https://ocaml.org/install). And for installing essential OCaml libraries I used [this script](https://raw.githubusercontent.com/Induaditya3/dump/refs/heads/main/ocaml_setup.sh), which is basically `opam install <name>` on each line.
 
 ### hello world
 
