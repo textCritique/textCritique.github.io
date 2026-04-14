@@ -1321,3 +1321,90 @@ fn main() {
 {:file="Output"}
 
 Above slice has the type `&[i32]`. It works similarly to string slices.
+
+
+## Structs
+
+The struct helps us to group different data type and give each member type a meaningful name.
+
+### defining and instantiating structs
+
+Instead of verbal description, here's example:
+
+```rust
+struct struct_name {
+  field_name : data_type,
+  ...
+}
+```
+
+We can create *instance* of struct by specifying the `key: value` pairs inside the curly bracket. Example:
+
+```rust
+
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+
+fn main() {
+    let user = User {
+        sign_in_count: 1,
+        email: String::from("a@g.com"),
+        username: String::from("blow"),
+        active: true,
+    };
+    println!("Values of the various field");
+    println!("  active: {}", user.active);
+    println!("  username: {}", user.username);
+    println!("  email: {}", user.email);
+    println!("  sign in count: {}", user.sign_in_count);
+}
+```
+
+```
+Values of the various field
+  active: true
+  username: blow
+  email: a@g.com
+  sign in count: 1
+```
+{:file="Output"}
+
+Since value and their field name are used, so the order doesn't matter. For accessing individual field members, `.` operator is used as shown above.
+`.` operator can also be used to modify the data of struct's field if  **mutable** instance of the struct is declared like `user.active = false;`.
+
+> Rust does not allow only selected field be mutable and rest be immutable. Either all the field of the struct is mutable or none.
+{:.prompt-warning}
+
+If we are initializing a struct with values contained in variables with same name as the field name then we could forgo the field name. Example:
+
+```rust
+
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+
+fn create_user(email: String, username: String) -> User {
+    User {
+        active: true,
+        username,
+        email,
+        sign_in_count: 1,
+    }
+}
+fn main() {
+    let user = create_user("hello@g.com".to_string(), "rustoc".to_string());
+    println!("sign in count: {}", user.sign_in_count);
+}
+```
+
+```
+sign in count: 1 
+```
+{:file="Output"}

@@ -349,7 +349,7 @@ ocamlopt -I `ocamlfind query graphics` graphics.cmxa mandelbrot.ml -o mandelbrot
 ![image of mandelbrot set](/assets/images/mandelbrot_out.png)
 _Output_
 
-I had similar program( TODO: add link to program) which had following output.
+I had similar [program](https://raw.githubusercontent.com/Induaditya3/fiddling/refs/heads/main/mandelbrot_set.ml) which had following output.
 
 ![image of mandelbrot set](/assets/images/mandelbrot_alt.png)
 _Visualization of Mandelbrot Set_
@@ -424,6 +424,8 @@ Primes less or equal to N
 41
 ```
 {:file="Output"}
+
+Slightly less efficient version in [C](https://gist.github.com/textCritique/dc4a9f2835ea059a5da25ee169b730b1)
 
 Note:
 1. `begin-end` works in the same way as `()` but convention is to used them to group the instructions that are imperative in nature.
