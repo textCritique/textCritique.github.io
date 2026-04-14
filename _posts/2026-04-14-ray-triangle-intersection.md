@@ -124,7 +124,7 @@ If there is no solution then either triangle is degenerate or ray is almost para
 
 In implementation, we only compute the value when we need them. Given below is the code which was used raytracer program in the preview image.
 
-```C
+```c
 
 // assign parameter t a finite value if triangle is intersected otherwise infinite value
 // o is the origin i.e. from where ray originates
