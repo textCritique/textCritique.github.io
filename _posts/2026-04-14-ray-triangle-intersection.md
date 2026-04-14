@@ -65,6 +65,7 @@ $$
 
 In matrix equation we can express it as
 
+$$
 \begin{equation}
 \begin{bmatrix}
  x_a - x_b & x_a - x_c &  x_d \\
@@ -84,11 +85,13 @@ t
 \end{bmatrix}
 \label{matrix_eq}
 \end{equation}
+$$
 
 We can solve this system of equation using cramer's rule. But we want to avoid recomputing the terms, so we will expand the determinant carefully.
 
 First, we rewrite \eqref{matrix_eq} as
 
+$$
 \begin{equation}
 \begin{bmatrix}
  a & d & g \\
@@ -108,6 +111,7 @@ l
 \end{bmatrix}
 \label{meta_eq}
 \end{equation}
+$$
 
 Now, computing determinants in terms elements of \eqref{meta_eq}
 
