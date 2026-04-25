@@ -164,7 +164,7 @@ val s : string = "12345"
 ### monte-carlo method (2nd program)
 
 We will be approximating value of pi using this method. Idea is to find probability of point to lie inside the quarter circle inscribed within square of unit one, if point is randomly assigned anywhere inside the unit square. We know thoretically it is equal to `pi/4`.
-We will get `pi` by multiplying empiracal value by 4.
+We will get `pi` by multiplying empirical value by 4.
 
 ![Quarter Circle inside Unit Circle](/assets/images/quarter_circle.png)
 _Pi approximation using Monte-Carlo method_
@@ -592,3 +592,5 @@ fun <param1> <param2> ... <paramn> -> <some_expression_using_parameters>
 
 ```
 We can name them too like `let f = fun x -> x + 1`.
+
+
